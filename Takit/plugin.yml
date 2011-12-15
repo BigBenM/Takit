@@ -16,19 +16,19 @@ commands:
           default: false
    r:
       description: Replies to a private message sent to or from a player
-      permission:: takit.chat.reply
+      permission: takit.chat.reply
       usage: /r <message>
       permissions:
           default: true
    mute:
-      description: Mutes a player so that you will no see any of their messages
-      permission:: takit.chat.mute
+      description: Mutes a player so that you will not see any of their messages
+      permission: takit.chat.mute
       usage: /mute <player | all>
       permissions:
           default: false
    unmute:
       description: Unmutes a player so that you will see the messages
-      permission:: takit.chat.mute
+      permission: takit.chat.mute
       usage: /unmute <player | all>
       permissions:
           default: false
