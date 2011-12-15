@@ -1,0 +1,34 @@
+name: Takit
+main: org.takit.Takit
+version: 0.1b
+commands:
+   nickname:
+      description: Changes your nickname.
+      permission: takit.chat.nickname
+      usage: /nickname <nickname>
+      permissions:
+          default: false
+   msg:
+      description: Sends a private message to player.
+      permission: takit.chat.msg
+      usage: /msg <player> <message>
+      permissions:
+          default: false
+   r:
+      description: Replies to a private message sent to or from a player
+      permission:: takit.chat.reply
+      usage: /r <message>
+      permissions:
+          default: true
+   mute:
+      description: Mutes a player so that you will no see any of their messages
+      permission:: takit.chat.mute
+      usage: /mute <player | all>
+      permissions:
+          default: false
+   unmute:
+      description: Unmutes a player so that you will see the messages
+      permission:: takit.chat.mute
+      usage: /unmute <player | all>
+      permissions:
+          default: false
