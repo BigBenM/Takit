@@ -63,7 +63,7 @@ public class Takit extends JavaPlugin {
 	public void initConfig() {
 		FileConfiguration config = getConfig();
 		
-		File configFile = new File("plugin" + File.separator + "Takit" + File.separator + "config.yml");
+		File configFile = new File(this.getDataFolder(), "config.yml");
 		if ( !configFile.exists() ) {
 			config.set("chat.max-nickname-count", 1);
 			saveConfig();
