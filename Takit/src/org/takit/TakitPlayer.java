@@ -48,6 +48,7 @@ public class TakitPlayer  {
 				ps = plugin.connection.prepareStatement(
 					"select player_muted from players_muted where player_name=?"
 				);
+				ps.setString(1, this.player.getName());
 				rs = ps.executeQuery();
 				while ( rs.next() ) {
 					mutedList.add(rs.getString("player_muted"));
@@ -171,25 +172,69 @@ public class TakitPlayer  {
 	}
 	
 	public void setGlobalMute(boolean globalMute) {
-		this.globalMute = globalMute;
-	}
-	public void addMute(String playerName) {
-		if ( !this.player.hasPermission("takit.chat.mute") ) {
-			//TODO display error
-			return;
+		PreparedStatement ps = null;
+		try {
+			ps = plugin.connection.prepareStatement(
+				"update players set global_mute=? where player_name=?"
+			);
+			ps.setInt(1, globalMute ? 1:0);
+			ps.setString(2, this.player.getName());
+			ps.executeUpdate();
+			this.globalMute = globalMute;
 		}
-		
+		catch ( Exception e ) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if ( ps!=null ) ps.close();
+			}
+			catch ( Exception ignore ) { }
+		}
+	}
+	public void addMute(String playerName) {		
 		if ( !mutedList.contains(playerName) ) {
-			mutedList.add(playerName);
+			PreparedStatement ps = null;
+			try {
+				ps = plugin.connection.prepareStatement(
+					"insert into players_muted (player_name,player_muted) values (?,?)"
+				);
+				ps.setString(1, this.player.getName());
+				ps.setString(2, playerName);
+				ps.executeUpdate();
+				mutedList.add(playerName);
+			}
+			catch ( Exception e ) {
+				e.printStackTrace();
+			}
+			finally {
+				try {
+					if ( ps!=null ) ps.close();
+				}
+				catch ( Exception ignore ) { }
+			}
 		}
 	}
-	public void removeMute(String playerName) {
-		if ( !this.player.hasPermission("takit.chat.mute") ) {
-			//TODO display error
-			return;
+	public void removeMute(String playerName) {		
+		PreparedStatement ps = null;
+		try {
+			ps = plugin.connection.prepareStatement(
+				"delete from players_muted where player_name=? and player_muted=?"
+			);
+			ps.setString(1, this.player.getName());
+			ps.setString(2, playerName);
+			ps.executeUpdate();
+			mutedList.remove(playerName);
 		}
-		
-		mutedList.remove(playerName);
+		catch ( Exception e ) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if ( ps!=null ) ps.close();
+			}
+			catch ( Exception ignore ) { }
+		}
 	}
 	
 	public void sendPrivateMessage(TakitPlayer to, String msg) {
@@ -219,9 +264,9 @@ public class TakitPlayer  {
 		
 		while ( i.hasNext() ) {
 			TakitPlayer tp  = i.next(); 
-			if  ( !tp.globalMute ) {
+			if  ( !tp.globalMute || !tp.mutedList.contains(this.player.getName()) ) {
 				tp.player.sendMessage(String.format(Messages.PLAYER_CHAT, 
-					player.getName(),
+					player.getDisplayName(),
 					msg
 				));
 			}
